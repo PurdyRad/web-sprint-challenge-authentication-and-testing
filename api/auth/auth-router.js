@@ -1,7 +1,18 @@
 const router = require('express').Router();
+const jwt = require('jsonwebtoken');
+const jwtsecret = require('../secrets/index');
+const Auth = require('./auth-model');
+const { registerUsername,
+   emptyCredentials} = require('../middleware/restricted');
 
-router.post('/register', (req, res) => {
-  res.end('implement register, please!');
+
+router.post('/register', emptyCredentials, registerUsername, (req, res, next) => {
+  const { username, password } = req.body;
+  Auth.registering({username, password})
+  .then(registeredUser => {
+    res.status(201).json(registeredUser)
+  })
+  .catch(next);
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
