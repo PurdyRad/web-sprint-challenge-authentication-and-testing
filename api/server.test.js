@@ -3,22 +3,24 @@ const server = require('./server');
 const db = require('../data/dbConfig');
 
 beforeAll(async ()=>{
-  await db.migrate.rollback()
-  await db.migrate.latest()
-})
-beforeEach(async ()=>{
-  await db('users').truncate()
-})
-afterAll(async ()=>{
-  await db.destroy()
-})
+  await db.migrate.rollback();
+  await db.migrate.latest();
+});
 
-const alice = {username: 'Alice', password: 'Wonderland'}
-const val = {username: 'Valentino', password: 'Khan'}
+beforeEach(async ()=>{
+  await db('users').truncate();
+});
+
+afterAll(async ()=>{
+  await db.destroy();
+});
+
+const alice = {username: 'Alice', password: 'Wonderland'};
+const val = {username: 'Valentino', password: 'Khan'};
 
 test('sanity', () => {
-  expect(process.env.NODE_ENV).toBe('testing')
-})
+  expect(process.env.NODE_ENV).toBe('testing');
+});
 
 describe('[POST] /api/auth/register', () => {
   it('responds with 201', async () => {
@@ -49,4 +51,21 @@ describe('[POST] /api/auth/login', () => {
     const logged = await request(server).post('/api/auth/login').send(alice);
     expect(logged.body.message).toBe("welcome, Alice");
   });
+});
+
+describe('[GET] /api/jokes', () => {
+  it("won't allow users without a token", async () => {
+    const jokeTheif = await request(server).get('/api/jokes');
+    expect(jokeTheif.status).toBe(401);
+  });
+
+  it('has jokes when acessed with token', async () => {
+    await request(server).post('/api/auth/register').send(val);
+    const logged = await request(server).post('/api/auth/login').send(val);
+    const auth = logged.body.token;
+    const joker = 
+    await request(server).get('/api/jokes').set('Authorization', auth);
+    expect(joker.body).toHaveLength(3);
+  });
+  
 });

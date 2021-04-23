@@ -3,6 +3,7 @@ const router = require('express').Router();
 const jokes = require('./jokes-data');
 
 router.get('/', (req, res) => {
+  console.log('req.headers',req.headers)
   res.status(200).json(jokes);
 });
 
