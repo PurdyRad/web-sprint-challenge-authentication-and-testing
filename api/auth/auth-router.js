@@ -4,7 +4,8 @@ const jwtsecret = require('../secrets/index');
 const Auth = require('./auth-model');
 const bcrypt = require('bcryptjs');
 const { registerUsername,
-   emptyCredentials} = require('../middleware/restricted');
+   emptyCredentials,
+  loginCredentials} = require('../middleware/restricted');
 
 
 router.post('/register', emptyCredentials, registerUsername, (req, res, next) => {
@@ -42,8 +43,13 @@ router.post('/register', emptyCredentials, registerUsername, (req, res, next) =>
   */
 });
 
-router.post('/login', (req, res) => {
-  res.end('implement login, please!');
+router.post('/login', emptyCredentials, loginCredentials, (req, res, next) => {
+if (bcrypt.compareSync(req.body.password, req.user.password)) {
+  const token = makeToken(req.user)
+  res.json({ message: `welcome, ${req.user.username}`, token})
+} else {
+  next({ status: 422, message: 'invalid credentials'})
+}
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -68,5 +74,15 @@ router.post('/login', (req, res) => {
       the response body should include a string exactly as follows: "invalid credentials".
   */
 });
+function makeToken (user) {
+  const payload = {
+    subject: user.id,
+    username: user.username
+  }
+  const options = {
+    expiresIn: '22h'
+  }
+  return jwt.sign(payload, jwtsecret, options);
+}
 
 module.exports = router;

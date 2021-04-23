@@ -55,6 +55,20 @@ const restricted = (req, res, next) => {
         }
       };
 
+      const loginCredentials = async (req, res, next) => {
+       try {
+         const user = await findBy({username: req.body.username})
+         if (!user) {
+           next({ status: 422, message: 'invalid credentials'})
+         } else {
+           req.user = user
+           next();
+         }
+       } catch (err) {
+        next(err);
+       }
+      };
+
       const emptyCredentials = (req, res, next) => {
         const {username, password} = req.body;
         if (!username || !password) {
@@ -67,5 +81,6 @@ const restricted = (req, res, next) => {
       module.exports = {
         restricted,
         registerUsername,
+        loginCredentials,
         emptyCredentials
       };
