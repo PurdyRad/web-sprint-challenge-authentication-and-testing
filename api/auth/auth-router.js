@@ -8,7 +8,9 @@ const { registerUsername,
   loginCredentials} = require('../middleware/restricted');
 
 
-router.post('/register', emptyCredentials, registerUsername, (req, res, next) => {
+router.post('/register',
+ emptyCredentials,
+  registerUsername, (req, res, next) => {
   const { username, password } = req.body;
   const hash = bcrypt.hashSync(password, 8);
   Auth.registering({username, password: hash})
@@ -43,7 +45,9 @@ router.post('/register', emptyCredentials, registerUsername, (req, res, next) =>
   */
 });
 
-router.post('/login', emptyCredentials, loginCredentials, (req, res, next) => {
+router.post('/login',
+ emptyCredentials,
+  loginCredentials, (req, res, next) => {
 if (bcrypt.compareSync(req.body.password, req.user.password)) {
   const token = makeToken(req.user)
   res.json({ message: `welcome, ${req.user.username}`, token})

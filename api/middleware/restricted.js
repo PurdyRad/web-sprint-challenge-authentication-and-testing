@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const jwtsecret = require('../secrets/index');
 const {findBy} = require('../auth/auth-model');
-const { find } = require('../jokes/jokes-data');
 
 const restricted = (req, res, next) => {
   const token = req.headers.authorization;
