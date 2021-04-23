@@ -38,6 +38,7 @@ describe('[POST] /api/auth/register', () => {
     const res = await request(server).post('/api/auth/register').send(val);
     expect(res.body.password).not.toBe(val.password);
   });
+
 });
 
 describe('[POST] /api/auth/login', () => {
@@ -51,6 +52,7 @@ describe('[POST] /api/auth/login', () => {
     const logged = await request(server).post('/api/auth/login').send(alice);
     expect(logged.body.message).toBe("welcome, Alice");
   });
+  
 });
 
 describe('[GET] /api/jokes', () => {
@@ -67,5 +69,5 @@ describe('[GET] /api/jokes', () => {
     await request(server).get('/api/jokes').set('Authorization', auth);
     expect(joker.body).toHaveLength(3);
   });
-  
+
 });

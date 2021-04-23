@@ -14,10 +14,10 @@ server.use(cors());
 server.use(express.json());
 
 server.use('/api/auth', authRouter);
-server.use('/api/jokes', restricted, jokesRouter); // only logged-in users should have access!
+server.use('/api/jokes', restricted, jokesRouter);
 
 server.get('*', (req, res) => {
-    res.send(`Hello Earthling`)
+    res.send(`Hello Earthling`);
 });
 
 server.use((err, req, res, next) => { // eslint-disable-line

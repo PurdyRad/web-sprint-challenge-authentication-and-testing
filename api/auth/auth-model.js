@@ -6,10 +6,13 @@ async function registering (potentialUser)  {
 }
 
 function findBy (filter) {
-    return db('users').select('id', 'username', 'password').where(filter).first();
+    return db('users')
+    .select('id', 'username', 'password')
+    .where(filter)
+    .first();
 }
 
 module.exports = {
     registering,
     findBy
-}
+};
